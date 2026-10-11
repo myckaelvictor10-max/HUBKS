@@ -563,7 +563,147 @@ for _, corData in ipairs(TRAIL_CORES) do
         end
     })
 end
+-- ========== ABA SHADERS ==========
+local TabShaders = Window:CreateTab("Shaders", 4483362458)
+TabShaders:CreateSection("✨ Shaders Bonitos")
 
+local shaderOriginal = nil
+
+local function salvarShaderOriginal()
+    if shaderOriginal then return end
+    shaderOriginal = {
+        Brightness = Lighting.Brightness,
+        Ambient = Lighting.Ambient,
+        OutdoorAmbient = Lighting.OutdoorAmbient,
+        ColorShift_Top = Lighting.ColorShift_Top,
+        ColorShift_Bottom = Lighting.ColorShift_Bottom,
+        ExposureCompensation = Lighting.ExposureCompensation
+    }
+end
+
+local function limparShaders()
+    pcall(function()
+        for _, v in ipairs(Lighting:GetChildren()) do
+            if v:IsA("ColorCorrectionEffect") or v:IsA("BloomEffect") or 
+               v:IsA("SunRaysEffect") or v:IsA("DepthOfFieldEffect") or 
+               v:IsA("BlurEffect") then
+                v:Destroy()
+            end
+        end
+    end)
+end
+
+local function resetarShaders()
+    pcall(function()
+        limparShaders()
+        if shaderOriginal then
+            Lighting.Brightness = shaderOriginal.Brightness
+            Lighting.Ambient = shaderOriginal.Ambient
+            Lighting.OutdoorAmbient = shaderOriginal.OutdoorAmbient
+            Lighting.ColorShift_Top = shaderOriginal.ColorShift_Top
+            Lighting.ColorShift_Bottom = shaderOriginal.ColorShift_Bottom
+            Lighting.ExposureCompensation = shaderOriginal.ExposureCompensation
+        end
+    end)
+end
+
+local function aplicarShader(config)
+    pcall(function()
+        salvarShaderOriginal()
+        limparShaders()
+        if config.Brightness then Lighting.Brightness = config.Brightness end
+        if config.Ambient then Lighting.Ambient = config.Ambient end
+        if config.OutdoorAmbient then Lighting.OutdoorAmbient = config.OutdoorAmbient end
+        if config.ColorCorrection then
+            local cc = Instance.new("ColorCorrectionEffect")
+            cc.Brightness = config.ColorCorrection.Brightness or 0
+            cc.Contrast = config.ColorCorrection.Contrast or 0
+            cc.Saturation = config.ColorCorrection.Saturation or 0
+            cc.TintColor = config.ColorCorrection.TintColor or Color3.fromRGB(255,255,255)
+            cc.Parent = Lighting
+        end
+        if config.Bloom then
+            local bl = Instance.new("BloomEffect")
+            bl.Intensity = config.Bloom.Intensity or 1
+            bl.Size = config.Bloom.Size or 24
+            bl.Threshold = config.Bloom.Threshold or 1
+            bl.Parent = Lighting
+        end
+        if config.SunRays then
+            local sr = Instance.new("SunRaysEffect")
+            sr.Intensity = config.SunRays.Intensity or 0.1
+            sr.Spread = config.SunRays.Spread or 0.5
+            sr.Parent = Lighting
+        end
+        if config.DepthOfField then
+            local dof = Instance.new("DepthOfFieldEffect")
+            dof.FarIntensity = config.DepthOfField.FarIntensity or 0
+            dof.FocusDistance = config.DepthOfField.FocusDistance or 10
+            dof.InFocusRadius = config.DepthOfField.InFocusRadius or 10
+            dof.NearIntensity = config.DepthOfField.NearIntensity or 0
+            dof.Parent = Lighting
+        end
+        if config.Blur then
+            local blur = Instance.new("BlurEffect")
+            blur.Size = config.Blur.Size or 0
+            blur.Parent = Lighting
+        end
+    end)
+end
+
+local shaders = {
+    {Name = "🌺 Vibração Colorida", Brightness = 3, Ambient = Color3.fromRGB(120,80,150), OutdoorAmbient = Color3.fromRGB(200,150,220), ColorCorrection = {Brightness=0.05,Contrast=0.3,Saturation=0.6,TintColor=Color3.fromRGB(255,220,255)}, Bloom = {Intensity=1.5,Size=30,Threshold=0.8}, SunRays = {Intensity=0.15,Spread=0.8}},
+    {Name = "🌅 Cinema Dourado", Brightness = 2.5, Ambient = Color3.fromRGB(150,100,50), OutdoorAmbient = Color3.fromRGB(230,180,100), ColorCorrection = {Brightness=0.05,Contrast=0.2,Saturation=0.3,TintColor=Color3.fromRGB(255,220,180)}, Bloom = {Intensity=1.2,Size=28,Threshold=0.9}, SunRays = {Intensity=0.2,Spread=1}, DepthOfField = {FocusDistance=15,InFocusRadius=20,FarIntensity=0.15,NearIntensity=0.05}},
+    {Name = "💙 Azul Cintilante", Brightness = 2.8, Ambient = Color3.fromRGB(80,120,200), OutdoorAmbient = Color3.fromRGB(150,200,255), ColorCorrection = {Brightness=0.02,Contrast=0.25,Saturation=0.4,TintColor=Color3.fromRGB(200,230,255)}, Bloom = {Intensity=1.8,Size=32,Threshold=0.75}},
+    {Name = "💜 Neon Roxo", Brightness = 2.5, Ambient = Color3.fromRGB(100,50,150), OutdoorAmbient = Color3.fromRGB(180,100,220), ColorCorrection = {Brightness=0,Contrast=0.4,Saturation=0.7,TintColor=Color3.fromRGB(220,180,255)}, Bloom = {Intensity=2.2,Size=35,Threshold=0.7}},
+    {Name = "🌹 Romance Rosa", Brightness = 3, Ambient = Color3.fromRGB(150,100,130), OutdoorAmbient = Color3.fromRGB(255,200,220), ColorCorrection = {Brightness=0.08,Contrast=0.15,Saturation=0.35,TintColor=Color3.fromRGB(255,210,230)}, Bloom = {Intensity=1.4,Size=26,Threshold=0.85}},
+    {Name = "🌊 Anime Vívido", Brightness = 3.5, Ambient = Color3.fromRGB(100,150,220), OutdoorAmbient = Color3.fromRGB(180,220,255), ColorCorrection = {Brightness=0.1,Contrast=0.5,Saturation=0.8,TintColor=Color3.fromRGB(255,255,255)}, Bloom = {Intensity=2.5,Size=40,Threshold=0.6}},
+    {Name = "🌸 Kawaii Pastel", Brightness = 3.5, Ambient = Color3.fromRGB(200,180,220), OutdoorAmbient = Color3.fromRGB(255,230,250), ColorCorrection = {Brightness=0.15,Contrast=-0.1,Saturation=0.5,TintColor=Color3.fromRGB(255,240,255)}, Bloom = {Intensity=1.8,Size=35,Threshold=0.7}},
+    {Name = "🔥 Sunset Épico", Brightness = 2.5, Ambient = Color3.fromRGB(180,80,40), OutdoorAmbient = Color3.fromRGB(255,150,80), ColorCorrection = {Brightness=0.05,Contrast=0.35,Saturation=0.5,TintColor=Color3.fromRGB(255,200,150)}, Bloom = {Intensity=1.6,Size=30,Threshold=0.8}, SunRays = {Intensity=0.3,Spread=1.3}},
+    {Name = "❄️ Inverno Mágico", Brightness = 3, Ambient = Color3.fromRGB(150,180,220), OutdoorAmbient = Color3.fromRGB(220,240,255), ColorCorrection = {Brightness=0.08,Contrast=0.1,Saturation=0.2,TintColor=Color3.fromRGB(230,245,255)}, Bloom = {Intensity=1.5,Size=32,Threshold=0.75}, Blur = {Size=2}},
+    {Name = "💎 Cyberpunk", Brightness = 2, Ambient = Color3.fromRGB(80,30,120), OutdoorAmbient = Color3.fromRGB(200,50,180), ColorCorrection = {Brightness=0,Contrast=0.6,Saturation=0.9,TintColor=Color3.fromRGB(255,100,200)}, Bloom = {Intensity=2.8,Size=45,Threshold=0.5}},
+    {Name = "🌌 Galáxia Sonhadora", Brightness = 2, Ambient = Color3.fromRGB(60,40,120), OutdoorAmbient = Color3.fromRGB(120,80,200), ColorCorrection = {Brightness=0.05,Contrast=0.3,Saturation=0.6,TintColor=Color3.fromRGB(180,150,255)}, Bloom = {Intensity=2,Size=38,Threshold=0.7}},
+    {Name = "🎬 Cinematográfico", Brightness = 2, Ambient = Color3.fromRGB(50,50,60), OutdoorAmbient = Color3.fromRGB(100,100,120), ColorCorrection = {Brightness=-0.05,Contrast=0.4,Saturation=0.1,TintColor=Color3.fromRGB(255,240,220)}, Bloom = {Intensity=1,Size=24,Threshold=0.95}, DepthOfField = {FocusDistance=20,InFocusRadius=30,FarIntensity=0.2,NearIntensity=0.1}},
+    {Name = "🎮 Cartoon", Brightness = 3, Ambient = Color3.fromRGB(150,150,180), OutdoorAmbient = Color3.fromRGB(220,220,240), ColorCorrection = {Brightness=0.1,Contrast=0.5,Saturation=0.8,TintColor=Color3.fromRGB(255,255,240)}, Bloom = {Intensity=1.2,Size=30,Threshold=0.85}},
+    {Name = "🌈 Arco-Íris", Brightness = 3, Ambient = Color3.fromRGB(180,130,220), OutdoorAmbient = Color3.fromRGB(255,200,255), ColorCorrection = {Brightness=0.1,Contrast=0.3,Saturation=1,TintColor=Color3.fromRGB(255,220,255)}, Bloom = {Intensity=2.2,Size=45,Threshold=0.65}},
+    {Name = "⚡ Neon Absurdo", Brightness = 3, Ambient = Color3.fromRGB(100,200,255), OutdoorAmbient = Color3.fromRGB(150,255,255), ColorCorrection = {Brightness=0.15,Contrast=0.5,Saturation=1,TintColor=Color3.fromRGB(200,255,255)}, Bloom = {Intensity=3,Size=55,Threshold=0.55}},
+    {Name = "🌙 Dark Mode", Brightness = 1, Ambient = Color3.fromRGB(30,30,50), OutdoorAmbient = Color3.fromRGB(60,60,90), ColorCorrection = {Brightness=-0.1,Contrast=0.3,Saturation=-0.2,TintColor=Color3.fromRGB(180,180,220)}, Bloom = {Intensity=0.5,Size=20,Threshold=1}},
+    {Name = "💀 Horror", Brightness = 1.2, Ambient = Color3.fromRGB(60,20,20), OutdoorAmbient = Color3.fromRGB(100,40,40), ColorCorrection = {Brightness=-0.15,Contrast=0.5,Saturation=-0.5,TintColor=Color3.fromRGB(200,100,100)}, Bloom = {Intensity=0.7,Size=18,Threshold=1}, Blur = {Size=1}},
+    {Name = "🌴 Tropical", Brightness = 3.2, Ambient = Color3.fromRGB(150,200,150), OutdoorAmbient = Color3.fromRGB(220,255,200), ColorCorrection = {Brightness=0.08,Contrast=0.2,Saturation=0.6,TintColor=Color3.fromRGB(220,255,200)}, Bloom = {Intensity=1.6,Size=30,Threshold=0.8}},
+    {Name = "🚀 Sci-Fi", Brightness = 2.5, Ambient = Color3.fromRGB(80,100,180), OutdoorAmbient = Color3.fromRGB(100,180,255), ColorCorrection = {Brightness=0.05,Contrast=0.4,Saturation=0.5,TintColor=Color3.fromRGB(150,200,255)}, Bloom = {Intensity=2.4,Size=42,Threshold=0.6}},
+    {Name = "🍂 Outono", Brightness = 2.8, Ambient = Color3.fromRGB(180,100,50), OutdoorAmbient = Color3.fromRGB(255,180,100), ColorCorrection = {Brightness=0.05,Contrast=0.25,Saturation=0.4,TintColor=Color3.fromRGB(255,200,150)}, Bloom = {Intensity=1.4,Size=28,Threshold=0.85}},
+    {Name = "🌺 Primavera", Brightness = 3.2, Ambient = Color3.fromRGB(200,180,220), OutdoorAmbient = Color3.fromRGB(255,220,240), ColorCorrection = {Brightness=0.1,Contrast=0.15,Saturation=0.55,TintColor=Color3.fromRGB(255,230,250)}, Bloom = {Intensity=1.7,Size=32,Threshold=0.75}},
+}
+
+for _, s in ipairs(shaders) do
+    TabShaders:CreateButton({
+        Name = s.Name,
+        Callback = function()
+            aplicarShader(s)
+            Rayfield:Notify({
+                Title = "Gk Reach",
+                Content = "Shader: " .. s.Name,
+                Duration = 2,
+                Image = 4483362458
+            })
+        end
+    })
+end
+
+TabShaders:CreateSection("Controle")
+
+TabShaders:CreateButton({
+    Name = "🔄 RESETAR SHADER",
+    Callback = function()
+        resetarShaders()
+        Rayfield:Notify({
+            Title = "Gk Reach",
+            Content = "Shader restaurado!",
+            Duration = 2,
+            Image = 4483362458
+        })
+    end
+})
 -- ========== INIT ==========
 refreshBalls(true)
 updateReachSphere()
