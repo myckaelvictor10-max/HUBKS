@@ -704,6 +704,39 @@ TabShaders:CreateButton({
         })
     end
 })
+-- ========== ABA CELEBRAÇÃO ==========
+local TabCeleb = Window:CreateTab("Celebração", 4483362458)
+TabCeleb:CreateSection("🎉 Celebrações (Gamepass)")
+
+local celebs = {
+    {"✨ Siiuu", "Sii"},
+    {"✨ Siiuu Duplo", "DoubleSii"},
+    {"🧘 Calm Down", "Calm"},
+    {"🤸 Salto pra Trás", "Backflip"},
+    {"🤸 Salto pra Frente", "Frontflip"},
+    {"🧘 Meditação", "Meditation"},
+    {"📯 Vuvuzela", "Vuvuzela"},
+    {"🎪 Malabarismo", "Juggle"},
+    {"😴 O Cochilo", "Nap"},
+    {"⚽ Bola na Cabeça", "HeadStall"},
+}
+
+for _, c in ipairs(celebs) do
+    TabCeleb:CreateButton({
+        Name = c[1],
+        Callback = function()
+            pcall(function()
+                game:GetService("ReplicatedStorage").Celebration:FireServer(c[2])
+            end)
+            Rayfield:Notify({
+                Title = "Gk Reach",
+                Content = "✨ " .. c[1] .. " ativada!",
+                Duration = 2,
+                Image = 4483362458
+            })
+        end
+    })
+end
 -- ========== INIT ==========
 refreshBalls(true)
 updateReachSphere()
